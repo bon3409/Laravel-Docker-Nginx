@@ -1,0 +1,49 @@
+version: '3.1'
+networks:
+  laravel:
+    name: larvel
+services:
+    redis:
+        image: 'redis:alpine'
+        container_name: redis
+        networks:
+            - laravel
+    mysql:
+        image: 'mysql:8.0'
+        container_name: mysql
+        restart: unless-stopped
+        volumes:
+            - ./docker/mysql:/var/lib/mysql
+        environment:
+            - MYSQL_ROOT_PASSWORD=root
+            - MYSQL_DATABASE=my_database
+            - MYSQL_PASSWORD=root
+        ports:
+            - '3307:3306'
+        networks:
+            - laravel
+    nginx:
+        build: docker/nginx
+        container_name: nginx
+        volumes:
+            - '.:/var/www/html'
+            - './docker/nginx/nginx_path.conf:/etc/nginx/conf.d/default.conf'
+            - './docker/nginx/fastcgi_params:/etc/nginx/fastcgi_params'
+            - './docker/nginx/_wildcard.jp.ngrok.io+3-key.pem:/etc/nginx/_wildcard.jp.ngrok.io+3-key.pem'
+            - './docker/nginx/_wildcard.jp.ngrok.io+3.pem:/etc/nginx/_wildcard.jp.ngrok.io+3.pem'
+        ports:
+            - '8080:80'
+            - '8443:443'
+        depends_on:
+            - php
+            - mysql
+        networks:
+            - laravel
+    php-fpm:
+        build: docker/php-fpm
+        working_dir: /var/www/html
+        container_name: php
+        volumes:
+            - '.:/var/www/html'
+        networks:
+            - laravel
