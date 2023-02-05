@@ -438,6 +438,14 @@ services:
             - laravel
 ```
 
+## 啟用 Docker
+
+```bash
+$ docker compose build --no-cache
+
+$ docker compose up
+```
+
 ## ngrok 的設定
 
 因為有時候開發會遇到須給其他工程師使用的情況，需要開放讓別人可以連線，因此可以使用 ngrok
