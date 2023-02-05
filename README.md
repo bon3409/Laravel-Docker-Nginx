@@ -320,7 +320,7 @@ $ tree
 	        }
 	    }
 
-		# service-1 的規則
+        # service-1 的規則
 	    location @service-1 {
 	        rewrite /service-1/(.*)$ /service-1/index.php?/$1 last;
 	    }
@@ -442,7 +442,7 @@ services:
 
 因為有時候開發會遇到須給其他工程師使用的情況，需要開放讓別人可以連線，因此可以使用 ngrok
 
-==以下用付費版本的方式進行==
+<mark>以下用付費版本的方式進行</mark>
 
 - #### 編輯 hosts 設定
 
