@@ -39,7 +39,7 @@ services:
             - mysql
         networks:
             - laravel
-    php-fpm:
+    php:
         build: docker/php-fpm
         working_dir: /var/www/html
         container_name: php
