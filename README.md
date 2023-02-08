@@ -438,6 +438,16 @@ services:
             - laravel
 ```
 
+> **Note**
+> - 如果想要讓 docker container 可以連線到 local 設定的其他服務，可以在 `docker-compose.yml` 設定以下參數
+> - 這個需要 docker 版本在 v20.10 以上才有這個功能
+> 
+> ```yaml
+> extra_hosts:
+>   # <你的 local domain>:host-gateway
+>   - "host.docker.internal:host-gateway"
+> ```
+
 ## 啟用 Docker
 
 ```bash
