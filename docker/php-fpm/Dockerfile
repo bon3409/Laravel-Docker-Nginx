@@ -15,3 +15,7 @@ RUN pecl install redis && docker-php-ext-enable redis
 
 # 安裝 mysql 套件
 RUN docker-php-ext-install pdo pdo_mysql
+
+# 安裝 xdebug
+RUN pecl install xdebug \
+    && docker-php-ext-enable xdebug

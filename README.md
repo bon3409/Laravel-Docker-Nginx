@@ -448,6 +448,83 @@ services:
 >   - "host.docker.internal:host-gateway"
 > ```
 
+## VSCode 的 xdebug 設定
+
+> **Note**
+> - [Xdebug in VSCode with Docker](https://dev.to/jackmiras/xdebug-in-vscode-with-docker-379l)
+
+1. 新增一個 `xdebug.ini` 檔
+
+	```ini
+	[xdebug]
+	zend_extension=xdebug.so
+	xdebug.mode=develop,coverage,debug,profile
+	xdebug.discover_client_host=true
+	xdebug.idekey=docker
+	xdebug.start_with_request=yes
+	xdebug.log=/dev/stdout
+	xdebug.log_level=0
+	xdebug.client_port=9003
+	xdebug.client_host={YOUR_COMPUTER_IP}
+	````
+
+	YOUR_COMPUTER_IP 可以用以下方式取得
+
+	- **macOS**:  
+	
+		```bash
+		$ ipconfig getifaddr en0
+		```
+		
+	- **Windows with WSL**:  
+		
+		```bash
+		$ grep nameserver /etc/resolv.conf | cut -d ' ' -f2
+		```
+		
+	- **Linux (Debian based distros)**:  
+		
+		```bash
+		$ hostname -I | cut -d ' ' -f1
+		```
+
+2. 在 docker-compose.yml 裡面設定 xdebug 搬移的位置
+
+	```yaml
+	php-fpm:
+	build: docker/php-fpm
+	working_dir: /var/www/html
+	container_name: php
+	volumes:
+		- '.:/var/www/html'
+		- ./docker/php-fpm/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini # 要新增這行
+	```
+
+3. 在 php `Dockerfile` 裡面加入安裝 xdebug
+
+	```dockerfile
+	# 安裝 xdebug
+	RUN pecl install xdebug \
+	    && docker-php-ext-enable xdebug
+	```
+
+4. 在 vscode 的 `launch.json` 這定新增
+
+	記得 pathMappings 要指定到對的專案底下
+
+	```json
+	{
+		"name": "Listen for XDebug on Docker",
+		"type": "php",
+		"request": "launch",
+		"port": 9003,
+		"pathMappings": {
+			"/var/www/html/<專案目錄>": "${workspaceFolder}"
+		}
+	}
+	```
+
+
 ## 啟用 Docker
 
 ```bash
